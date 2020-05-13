@@ -1,0 +1,50 @@
+------------------------------------------------------------------------------------
+--	PROYECTO:			Comunidad Gamers 2.0 (2019)
+--	DERECHOS:			Todos los derechos reservados por los desarrolladores
+--	ARCHIVO:			CGutil/util.slua
+--	PROPÓSITO:			Utilidad para convertir tablas lua a string y viceversa
+--	DESARROLLADORES:	Leandro Correa Gimenez (Salchy)
+------------------------------------------------------------------------------------
+
+function tablecount(table)
+	local count = 0
+	for key, val in pairs(table) do
+		count = count + 1
+	end
+	return count
+end
+
+function toSTRING(tabla)
+	local string = ""
+	for index, val in ipairs(tabla) do
+		for index2, val2 in pairs(val) do
+			if (type(val2) == "boolean") then
+				tabla[index][index2] = tostring(val2)
+			end
+		end
+		string = string..";"..table.concat(val, ",")
+	end
+	string = string.sub(string, 2)
+	return string
+end
+
+function tobool(string)
+	return (string == "true")
+end
+
+function fromSTRING(string)
+	local tbl = {}
+	for index, val in ipairs(split(string, ";")) do
+		local tbl2 = split(val, ",")
+		for index2, val2 in pairs(tbl2) do
+			if (tonumber(val2)) then
+				tbl2[index2] = tonumber(val2)
+			elseif (val2 == "true" or val2 == "false") then
+				tbl2[index2] = tobool(val2)
+			end
+		end
+		tbl[#tbl + 1] = tbl2
+	end
+	tbl2 = nil
+	return tbl
+end

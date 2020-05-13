@@ -1,0 +1,8 @@
+<meta>
+	<info author="Salchy" description="Utilidad para convertir tablas lua a string y viceversa" version="1.0" type="script"/>
+
+	<export function="tablecount" type="server"/>
+	<export function="toSTRING" type="server"/>
+	<export function="tobool" type="server"/>
+	<export function="fromSTRING" type="server"/>
+</meta>
