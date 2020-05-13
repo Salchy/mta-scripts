@@ -361,6 +361,7 @@ function toggleCamara(key, state)
 	end
 end
 
+
 function exportarElemento()
 	local area = getActiveTab()
 	if (not area) then
@@ -372,12 +373,13 @@ function exportarElemento()
 	local x, y, z = getElementPosition(elementos[area])
 	local rx, ry, rz = getElementRotation(elementos[area])
 	local x, y, z = string.format("%.3f", x), string.format("%.3f", y), string.format("%.3f", z)
-	local rx, ry, rz = string.format("%.3f", rx), string.format("%.3f", ry), string.format("%.3f", rz)
 	if (area == "Markers" or area == "Pickups") then
 		outputChatBox(x..", "..y..", "..z)
 	elseif (area == "Objects") then
+		local rx, ry, rz = string.format("%.3f", rx), string.format("%.3f", ry), string.format("%.3f", rz)
 		outputChatBox(x..", "..y..", "..z..", "..rx..", "..ry..", "..rz)
 	elseif (area == "Peds") then
+		local rz = string.format("%.3f", rz)
 		outputChatBox(x..", "..y..", "..z..", "..rz)
 	end
 end
