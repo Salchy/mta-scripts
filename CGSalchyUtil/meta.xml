@@ -1,6 +1,0 @@
-<meta>
-	<info author="Salchy" description="Sistema para ayudar a crear markers, pickups y etc" version="1.0" type="script"/>
-	
-	<script src="markersGUI.lua" type="client" cache="false"/>
-	<script src="servidor.lua" type="server"/>
-</meta>
