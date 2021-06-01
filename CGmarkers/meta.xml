@@ -1,0 +1,6 @@
+<meta>
+	<info author="Leandro Correa Gimenez (Salchy)" description="Sistema para ayudar a crear markers, pickups y etc" version="2.0" type="script"/>
+	
+	<script src="markersGUI.lua" type="client" cache="false"/>
+	<script src="servidor.lua" type="server"/>
+</meta>
