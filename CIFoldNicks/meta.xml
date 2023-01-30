@@ -1,0 +1,5 @@
+<meta>
+	<info author="Leandro Correa Gimenez (Salchy)" description="Script para ver los últimos nicks de un jugador" version="1.0 (2023)" date="Comunidad de Integridad y Fuerza 2.0 (2023)" type="script"/>
+
+	<script src="server.slua" type="server"/>
+</meta>
