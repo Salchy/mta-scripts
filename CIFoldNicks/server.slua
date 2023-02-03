@@ -3,7 +3,7 @@
 --	DERECHOS:			Todos los derechos reservados por los desarrolladores
 --	ARCHIVO:			CIFoldNicks/server.slua
 --	PROPÓSITO:			Script para ver los últimos nicks de un jugador
---	DESARROLLADORES:	Leandro Correa Gimenez (Salchy)
+--	DESARROLLADORES:		Leandro Correa Gimenez (Salchy)
 ------------------------------------------------------------------------------------
 
 local db = dbConnect("sqlite", ":/oldnicks.db")
@@ -18,7 +18,7 @@ function getOldsNicksFromAccount(accname)
 	local oldsNicks = {}
 	local data = dbPoll(dbQuery(db, "SELECT * FROM oldNicks WHERE accname = ?", accname), -1)
 	if (data and #data > 0) then
-		oldsNicks = split(data[1]["nicks"], " , ")
+		oldsNicks = fromJSON(data[1]["nicks"])
 	end
 	cacheAccountNicks[accname] = oldsNicks
 	return oldsNicks
@@ -30,8 +30,12 @@ function registerNewName(accname, nickname)
 	if (#cacheAccountNicks[accname] == 15) then -- al llegar al nick número 15, borra el primero de la lista, y añade el nuevo, de esta forma, sólo almacena 15 nicks
 		table.remove(cacheAccountNicks[accname], 1)
 	end
-	cacheAccountNicks[accname][#cacheAccountNicks[accname] + 1] = nickname
-	dbExec(db, "INSERT INTO oldNicks (accname, nicks) VALUES(?, ?)", accname, table.concat(cacheAccountNicks[accname], " , "))
+	
+	local day, month, year, hrs, mins, secs = exports.CGmisc:getDateAndTime() -- Requiere el export CGmisc
+	local dateString = "["..day.."-"..month.."-"..year.." - "..hrs..":"..mins..":"..secs.."]"
+	
+	cacheAccountNicks[accname][#cacheAccountNicks[accname] + 1] = {dateString, nickname}
+	dbExec(db, "INSERT INTO oldNicks (accname, nicks) VALUES(?, ?)", accname, toJSON(cacheAccountNicks[accname]))
 end
 
 function onLoginSaveNick(previousAccount, currentAccount)
@@ -58,12 +62,26 @@ addEventHandler("onPlayerPostChangeNick", root, onChangeNick)
 
 function compareNicks(accname, nickname)
 	for key, val in pairs(getOldsNicksFromAccount(accname)) do
-		if (string.lower(nickname) == string.lower(val)) then
+		if (string.lower(nickname) == string.lower(val[2])) then
 			return true
 		end
 	end
 	return false
 end
+
+function registerOnResourceStart() -- Para que guarde los nicks de los jugadores actuales al iniciar el script por primera vez
+	for key, val in pairs(getElementsByType("player")) do
+		local account = getPlayerAccount(val)
+		if (not isGuestAccount(account)) then
+			local accname = getAccountName(account)
+			local nickname = getPlayerName(val)
+			if (not compareNicks(accname, nickname)) then
+				registerNewName(accname, nickname)
+			end
+		end
+	end
+end
+addEventHandler("onResourceStart", resourceRoot, registerOnResourceStart)
 
 -- Comandos:
 
@@ -80,9 +98,10 @@ function getOldsNicksFromAccountCMD(player, cmd, accname)
 		outputChatBox("ERROR: Esta cuenta no existe.", player, 255, 0, 0)
 		return false
 	end
+	outputChatBox(" ", player, 0, 0, 0)
 	outputChatBox("#AFFF30Últimos nicks de la cuenta #FF6C00'"..accname.."'#AFFF30.", player, 0, 0, 0, true)
 	for key, val in pairs(getOldsNicksFromAccount(accname)) do
-		outputChatBox("#AFFF30"..key.."-. #FF6C00"..val, player, 0, 0, 0, true)
+		outputChatBox("#AFFF30"..val[1].." - #FF6C00"..val[2], player, 0, 0, 0, true)
 	end
 	outputChatBox(" ", player, 0, 0, 0)
 end
