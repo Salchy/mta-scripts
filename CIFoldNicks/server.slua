@@ -7,7 +7,7 @@
 ------------------------------------------------------------------------------------
 
 local db = dbConnect("sqlite", ":/oldnicks.db")
-dbExec(db, "CREATE TABLE IF NOT EXISTS oldNicks (accname TEXT, nicks TEXT)")
+dbExec(db, "CREATE TABLE IF NOT EXISTS oldNicks (accname VARCHAR(32), nicks TEXT)")
 
 local cacheAccountNicks = {}
 
